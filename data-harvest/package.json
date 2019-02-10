@@ -1,0 +1,29 @@
+{
+  "name": "get-bike-data",
+  "version": "1.0.0",
+  "description": "Data haresting app for Citi Bike data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sfrieson/will-there-be-bikes.git"
+  },
+  "author": "Steven Frieson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sfrieson/will-there-be-bikes/issues"
+  },
+  "homepage": "https://github.com/sfrieson/will-there-be-bikes#readme",
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
+  "semistandard": {
+    "globals": [
+      "expect",
+      "jest",
+      "test"
+    ]
+  }
+}
