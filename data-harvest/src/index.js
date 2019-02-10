@@ -1,9 +1,11 @@
+const path = require('path');
 const Scheduler = require('./lib/scheduler');
+const harvester = require('./lib/harvester');
 
 const schedule = new Scheduler(function doSomething () {
-  console.log('something');
+  console.log('task');
 
-  return Promise.resolve(3);
+  return harvester('https://gbfs.citibikenyc.com/gbfs/en/station_status.json', path.join(__dirname, 'out'));
 });
 
 process.on('SIGTERM', function () {

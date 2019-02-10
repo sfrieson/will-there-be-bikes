@@ -3,7 +3,7 @@ const wait = require('../../util/wait');
 /*
   Takes a function, which returns a value of how many seconds until the same function should be run again.
 */
-export default class Scheduler {
+module.exports = class Scheduler {
   constructor (task) {
     this.running = true;
     this.task = task;
@@ -28,4 +28,4 @@ export default class Scheduler {
     this.wait.cancel();
     return this.work;
   }
-}
+};
