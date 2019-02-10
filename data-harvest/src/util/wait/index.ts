@@ -1,6 +1,7 @@
-module.exports = function Wait (seconds) {
-  let timeout;
-  let resolveFromPromise;
+export default function wait (seconds: number): WaiterInterface {
+  let timeout: NodeJS.Timer;
+  let resolveFromPromise: Function;
+
   return {
     over: new Promise((resolve) => {
       resolveFromPromise = resolve;
@@ -12,3 +13,8 @@ module.exports = function Wait (seconds) {
     }
   };
 };
+
+export interface WaiterInterface {
+  over: Promise<number>,
+  cancel: Function
+}

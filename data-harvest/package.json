@@ -4,7 +4,8 @@
   "description": "Data haresting app for Citi Bike data.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "npx ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/sfrieson/will-there-be-bikes#readme",
   "devDependencies": {
-    "jest": "^24.1.0"
+    "@types/jest": "^24.0.0",
+    "@types/node": "^10.12.24",
+    "jest": "^24.1.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.3.3"
   },
   "semistandard": {
     "globals": [

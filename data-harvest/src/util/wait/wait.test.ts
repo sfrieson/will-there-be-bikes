@@ -1,4 +1,4 @@
-var wait = require('./');
+import wait from '.';
 
 test('does not respond immediately', function () {
   let finished = false;
