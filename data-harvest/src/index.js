@@ -1,4 +1,4 @@
-import Scheduler from './lib/scheduler';
+const Scheduler = require('./lib/scheduler');
 
 const schedule = new Scheduler(function doSomething () {
   console.log('something');

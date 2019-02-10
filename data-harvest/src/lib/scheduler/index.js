@@ -1,19 +1,15 @@
-import wait, { WaiterInterface } from '../../util/wait';
+const wait = require('../../util/wait');
 
 /*
   Takes a function, which returns a value of how many seconds until the same function should be run again.
 */
 export default class Scheduler {
-  running: Boolean
-  private task: Function
-  private wait: WaiterInterface
-  private work: Promise<number|undefined>
-  constructor (task: Function) {
+  constructor (task) {
     this.running = true;
     this.task = task;
     this.wait = wait(0);
 
-    const worker = async (): Promise<number|undefined> => {
+    const worker = async () => {
       const waitLength = await this.task();
       if (!this.running) return;
 
@@ -31,5 +27,5 @@ export default class Scheduler {
     this.running = false;
     this.wait.cancel();
     return this.work;
-  };
+  }
 }

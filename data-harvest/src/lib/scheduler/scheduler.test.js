@@ -1,4 +1,4 @@
-import Scheduler from '.';
+const Scheduler = require('.');
 
 test('Keeps running the scheduled job', function (done) {
   const task = jest.fn().mockReturnValue(Promise.resolve(0.5));
