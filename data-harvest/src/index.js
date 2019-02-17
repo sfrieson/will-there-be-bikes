@@ -1,23 +1,40 @@
-const path = require('path');
-const Scheduler = require('./lib/scheduler');
-const harvester = require('./lib/harvester');
+const Job = require('./lib/Job');
+const CitiBikeJob = require('./api/CitiBike/job');
+const OWMJob = require('./api/OpenWeatherMap/job');
 
-const schedule = new Scheduler(function doSomething () {
-  console.log('task');
+const jobs = [];
+jobs.push(new Job({
+  name: 'stations',
+  process: CitiBikeJob,
+  frequency: 10000 // 10s
+}));
 
-  return harvester('https://gbfs.citibikenyc.com/gbfs/en/station_status.json', path.join(__dirname, 'out'));
-});
+jobs.push(new Job({
+  name: 'weather',
+  process: OWMJob,
+  frequency: 1000, // 1s
+  wait: true // wait for previous job to complete
+}));
 
 process.on('SIGTERM', function () {
   console.log('Heard SIGTERM');
-  schedule.stop().then(function () {
-    process.exit(0);
-  });
+  Promise.all(jobs.map(job => job.stop()))
+    .then(function () {
+      process.exit(0);
+    });
 });
 
+let sigint = false;
 process.on('SIGINT', function () {
   console.log('Heard SIGINT');
-  schedule.stop().then(function () {
-    process.exit(0);
-  });
+  if (sigint) process.exit(0);
+  else sigint = true;
+  Promise.all(jobs.map(job => job.stop()))
+    .then(function () {
+      const used = process.memoryUsage();
+      for (let key in used) {
+        console.log(`${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`);
+      }
+      process.exit(0);
+    });
 });

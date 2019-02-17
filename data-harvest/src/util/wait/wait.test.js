@@ -1,4 +1,4 @@
-import wait from '.';
+const wait = require('.');
 
 test('does not respond immediately', function () {
   let finished = false;

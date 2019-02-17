@@ -12,7 +12,8 @@ module.exports = function makeGet (optionOverwrites = {}) {
       let data = '';
 
       https.get(url, function (res) {
-        const status = parseInt(res.status, 10);
+        const status = parseInt(res.statusCode, 10);
+        if (status >= 400) return reject(status);
         if (status >= 300) return resolve(status);
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
