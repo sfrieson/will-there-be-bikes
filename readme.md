@@ -17,7 +17,7 @@ The application will consist of three or four different applications.
 
 The Data Harvester collects data from Citi Bike as well as Open Weather Map. The Citi Bike station status information which includes how many bikes are available at each station, is collected every 10 seconds as hinted by the TTL in the response object. Weather information is requested every second as limited by the free tier of the API. The locations requested for weather readings is provided by the Citi Bike station information endpoint which provides geocoordinates. Each call requests weather for a different station until the list is exhausted, at which time, a new list is requested, in the chance that the list has changed since the last fetch.
 
-The data is written to a directory that is swapped out periodically, log rotation style, and puts it into Amazon S3 to be consumed by the Forecast Trainer.
+The data is written to Amazon S3 to be consumed by the Forecast Trainer.
 
 ### Forecast Trainer
 
