@@ -1,8 +1,19 @@
 const Job = require('./lib/Job');
 const CitiBikeJob = require('./api/CitiBike/job');
 const OWMJob = require('./api/OpenWeatherMap/job');
+const dirMaintenance = require('./util/dir-maintenance');
+
+dirMaintenance.setup();
 
 const jobs = [];
+
+jobs.push(new Job({
+  name: 'directory maintenance',
+  process: dirMaintenance.rotate,
+  frequency: 6000000, // 1hr
+  runImmediately: false
+}));
+
 jobs.push(new Job({
   name: 'stations',
   process: CitiBikeJob,

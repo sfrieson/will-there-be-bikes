@@ -24,7 +24,7 @@ module.exports = class Job {
 
     this.run = this.run.bind(this);
 
-    this.run();
+    ('runImmediately' in args ? args.runImmediately : true) && this.run();
     this.running = true;
   }
 

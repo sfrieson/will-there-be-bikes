@@ -3,6 +3,7 @@ const path = require('path');
 const OWM = require('.');
 const CitiBike = require('../CitiBike')();
 const Queue = require('../../util/queue');
+const timestamp = require('../../util/timestamp');
 const writeFile = require('../../util/writeFile');
 
 const weather = new OWM({key: process.env.OWMKEY});
@@ -34,10 +35,8 @@ module.exports = async function () {
     throw new Error('Failed to request Weather data.');
   }
 
-  const time = Math.floor(Date.now() / 1e3);
-
   try {
-    await writeFile(path.join(baseOutDir, station.station_id), time + '.json', JSON.stringify(data));
+    await writeFile(path.join(baseOutDir, station.station_id), timestamp() + '.json', JSON.stringify(data));
   } catch (e) {
     console.log(e);
     throw new Error('Failed to write weather file.');
