@@ -21,6 +21,7 @@ function writeObject (filename, data) {
     });
   });
 }
+
 function get (url) {
   return new Promise(function (resolve, reject) {
     let data = '';
@@ -40,17 +41,19 @@ function get (url) {
   });
 }
 
-exports.handler = function (event, context) {
-  return get(ENDPOINT + event.stationId)
-    .then(function (res) {
-      if (res.statusCode === 200) {
-        const payload = JSON.stringify(res.data);
-        const timestamp = Math.floor(Date.now() / 1e3);
-        const filename = `weather/${event.stationId}_${timestamp}.json`;
-        return writeObject(filename, payload);
-      } else {
-        throw new Error(`Request failed. Status code: ${res.statusCode}.\n${res.data}`);
-      }
-    })
-    .catch(console.log);
+exports.handler = async function (event, context) {
+  try {
+    const res = await get(ENDPOINT + event.stationId);
+    if (res.statusCode === 200) {
+      const timestamp = Math.floor(Date.now() / 1e3);
+      const payload = JSON.stringify(res.data);
+      var filename = `weather/${event.stationId}_${timestamp}.json`;
+      await writeObject(filename, payload);
+      await writeObject('current-weather.txt', filename);
+    } else {
+      throw new Error(`Request failed. Status code: ${res.statusCode}.\n${res.data}`);
+    }
+  } catch (e) {
+    console.log(e);
+  }
 };

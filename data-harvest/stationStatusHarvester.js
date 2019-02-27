@@ -21,7 +21,7 @@ function writeObject (filename, data) {
     });
   });
 }
-function get (url) {
+function get (url, text) {
   return new Promise(function (resolve, reject) {
     let data = '';
 
@@ -33,23 +33,26 @@ function get (url) {
       res.on('end', function () {
         resolve({
           statusCode: parseInt(res.statusCode, 10),
-          data: JSON.parse(data)
+          data: text ? data : JSON.parse(data)
         });
       });
     }).on('error', reject);
   });
 }
 
-exports.handler = function (event, context) {
-  return get(ENDPOINT)
-    .then(function (res) {
-      if (res.statusCode === 200) {
-        const payload = JSON.stringify(res.data);
-        const filename = `station-status/${res.data.last_updated}.json`;
-        return writeObject(filename, payload);
-      } else {
-        throw new Error(`Request failed. Status code: ${res.statusCode}.\n${res.data}`);
-      }
-    })
-    .catch(console.log);
+exports.handler = async function (event, context) {
+  try {
+    const [res, weatherFile] = await Promise.all([get(ENDPOINT), get('s3://will-there-be-bikes-data/current-weather.txt', true)]);
+    if (res.statusCode === 200) {
+      const payload = JSON.stringify(res.data);
+      payload.weatherFile = weatherFile;
+
+      const filename = `station-status/${res.data.last_updated}.json`;
+      return writeObject(filename, payload);
+    } else {
+      throw new Error(`Request failed. Status code: ${res.statusCode}.\n${res.data}`);
+    }
+  } catch (e) {
+    console.log(e);
+  }
 };
