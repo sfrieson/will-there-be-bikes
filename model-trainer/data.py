@@ -2,28 +2,11 @@ import json
 import numpy as np
 import os
 from torch.utils.data import Dataset
-from utils.is_holiday import is_holiday
+from utils.time import *
+from utils.one_hot import one_hot
 
 # https://openweathermap.org/weather-conditions
 weather_condition_codes = [200,201,202,210,211,212,221,230,231,232,300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,600,601,602,611,612,615,616,620,621,622,701,711,721,731,741,751,761,762,771,781,800,801,802,803,804]
-
-def one_hot(value, length=None, values=None):
-  if values is None:
-    values = range(length)
-
-  vector = np.zeros([1, len(values)])
-  vector[0, values.index(value)] = 1
-
-  return vector[0]
-
-def get_day_of_week (time):
-  one_day = 24 * 60 * 60
-  four_days = 4 * one_day
-  seven_days = 7 * one_day
-
-  day_index = int(((time - time % one_day) + four_days) % seven_days / one_day)
-
-  return one_hot(day_index, length=7)
 
 def prepare(item):
   """
@@ -51,6 +34,7 @@ def prepare(item):
 
   data = np.array([
     *one_hot(weather_condition['id'], values=weather_condition_codes),
+    weather_condition['id'] // 100, # weather condition class
     w['main']['temp'],
     w['main']['pressure'],
     w['main']['humidity'] / 100,
@@ -58,9 +42,11 @@ def prepare(item):
     w['wind']['speed'],
     rain,
     snow,
-    *get_day_of_week(item['time']),
+    *day_of_week(item['time']),
     1 if is_holiday(item['time']) else -1,
+    *one_hot(season(item['time']), values=seasons),
     item['info']['capacity']
+    # TK neighborhood
   ])
 
   return data, y
