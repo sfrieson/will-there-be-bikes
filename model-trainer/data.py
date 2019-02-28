@@ -3,16 +3,26 @@ import numpy as np
 import os
 from torch.utils.data import Dataset
 
+# https://openweathermap.org/weather-conditions
+weather_condition_codes = [200,201,202,210,211,212,221,230,231,232,300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,600,601,602,611,612,615,616,620,621,622,701,711,721,731,741,751,761,762,771,781,800,801,802,803,804]
+
+def one_hot(value, length=None, values=None):
+  if values is None:
+    values = range(length)
+
+  vector = np.zeros([1, len(values)])
+  vector[0, values.index(value)] = 1
+
+  return vector[0]
+
 def get_day_of_week (time):
   one_day = 24 * 60 * 60
   four_days = 4 * one_day
   seven_days = 7 * one_day
 
-  day_index = ((time - time % one_day) + four_days) % seven_days / one_day
-  days = np.zeros([1, 7])
-  days[0, int(day_index)] = 1.
+  day_index = int(((time - time % one_day) + four_days) % seven_days / one_day)
 
-  return days[0]
+  return one_hot(day_index, length=7)
 
 def prepare(item):
   """
@@ -23,8 +33,13 @@ def prepare(item):
 
   y = item['num_bikes_available'] / item['info']['capacity']
   w = item['weather']
+  if isinstance(w['weather'], list):
+    weather_condition = w['weather'][0]
+  else:
+    weather_condition = w['weather']
+
   data = np.array([
-    # w['weather']['id], # TK one-hot encoded
+    *one_hot(weather_condition['id'], values=weather_condition_codes),
     w['main']['temp'],
     w['main']['pressure'],
     w['main']['humidity'] / 100,
