@@ -2,6 +2,7 @@ import json
 import numpy as np
 import os
 from torch.utils.data import Dataset
+from utils.is_holiday import is_holiday
 
 # https://openweathermap.org/weather-conditions
 weather_condition_codes = [200,201,202,210,211,212,221,230,231,232,300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,600,601,602,611,612,615,616,620,621,622,701,711,721,731,741,751,761,762,771,781,800,801,802,803,804]
@@ -48,6 +49,7 @@ def prepare(item):
     # w['rain']['3h'], or 0
     # w['snow']['3h'], or 0
     *get_day_of_week(item['time']),
+    1 if is_holiday(item['time']) else -1,
     item['info']['capacity']
   ])
 
