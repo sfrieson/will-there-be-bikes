@@ -2,7 +2,7 @@ import json
 import numpy as np
 import os
 from torch.utils.data import Dataset
-from utils.time import *
+from utils import time
 from utils.one_hot import one_hot
 
 # https://openweathermap.org/weather-conditions
@@ -42,9 +42,9 @@ def prepare(item):
     w['wind']['speed'],
     rain,
     snow,
-    *day_of_week(item['time']),
-    1 if is_holiday(item['time']) else -1,
-    *one_hot(season(item['time']), values=seasons),
+    *time.day_of_week(item['time']),
+    1 if time.is_holiday(item['time']) else -1,
+    *one_hot(time.season(item['time']), values=time.seasons),
     item['info']['capacity']
     # TK neighborhood
   ])

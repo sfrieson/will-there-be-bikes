@@ -18,11 +18,11 @@ def day_of_week (time):
   return one_hot(day_index, length=7)
 
 def day_of_year (time):
-  return 3
+  return datetime.utcfromtimestamp(time).timetuple().tm_yday
 
 seasons = ['winter', 'sprint', 'summer', 'autumn']
 def season (time):
-  day = datetime.utcfromtimestamp(time).timetuple().tm_yday
+  day = day_of_year(time)
 
   if day < 81:
     return 'winter'
