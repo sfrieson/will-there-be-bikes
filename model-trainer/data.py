@@ -39,6 +39,16 @@ def prepare(item):
   else:
     weather_condition = w['weather']
 
+  try:
+    rain = w['rain']['3h']
+  except KeyError:
+    rain = 0
+
+  try:
+    snow = w['snow']['3h']
+  except KeyError:
+    snow = 0
+
   data = np.array([
     *one_hot(weather_condition['id'], values=weather_condition_codes),
     w['main']['temp'],
@@ -46,8 +56,8 @@ def prepare(item):
     w['main']['humidity'] / 100,
     w['clouds']['all'] / 100,
     w['wind']['speed'],
-    # w['rain']['3h'], or 0
-    # w['snow']['3h'], or 0
+    rain,
+    snow,
     *get_day_of_week(item['time']),
     1 if is_holiday(item['time']) else -1,
     item['info']['capacity']
