@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import time_utils as time
+from . import time_utils as time
 
 desired_fields = [
   'last_reported',
@@ -114,7 +114,7 @@ def get_keys():
     'condition_class': list(range(2, 9)),
     'boolean': [True, False],
     'day_of_week': list(range(7)),
-    'segment_of_day': list(range(24 * 60 / 5)) # 5 minute chunks of a day
+    'segment_of_day': list(range(int(24 * 60 / 5))) # 5 minute chunks of a day
   }
 
 def transform(data):
