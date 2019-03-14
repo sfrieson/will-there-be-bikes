@@ -24,6 +24,7 @@ desired_fields = [
   'temp',
   'wind_speed'
 ]
+
 def flattenWeatherDict(data):
   print(data)
   weather = {
@@ -75,7 +76,7 @@ def find_weather(weather, row):
 def remove_status_outliers(status):
   return status[status.last_reported > 1]
 
-def transform(data):
+def transform_data(data):
   status, meta, weather = data
   status = pd.DataFrame(status)
   meta = pd.DataFrame(meta)
@@ -105,3 +106,16 @@ def transform(data):
 
   merged = pd.merge(merged, weather, on='weather_time')
   return merged[desired_fields]
+
+def get_keys():
+  return {
+    'season': time.seasons,
+    'condition': [200,201,202,210,211,212,221,230,231,232,300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,600,601,602,611,612,615,616,620,621,622,701,711,721,731,741,751,761,762,771,781,800,801,802,803,804],
+    'condition_class': list(range(2, 9)),
+    'boolean': [True, False],
+    'day_of_week': list(range(7)),
+    'segment_of_day': list(range(24 * 60 / 5)) # 5 minute chunks of a day
+  }
+
+def transform(data):
+  return transform_data(data), get_keys()
