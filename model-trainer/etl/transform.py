@@ -118,7 +118,6 @@ def transform(data):
 
   for category in categories.keys():
     data[category] = data[category].astype('category')
-    print(category)
     data[category].cat.add_categories(
       [cat for cat in categories[category] if cat not in data[category].cat.categories]
     )
