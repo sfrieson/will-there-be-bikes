@@ -26,7 +26,6 @@ desired_fields = [
 ]
 
 def flattenWeatherDict(data):
-  print(data)
   weather = {
     'weather_time': data['dt'],
     'temp': data['main']['temp'],
@@ -92,10 +91,6 @@ def transform_data(data):
     ),
     on='last_reported'
   )
-  # print(status.head())
-  # print(time.head())
-  # print(meta.head())
-  # print(weather)
 
   merged = pd.merge(merged, meta, on='station_id')
   # add related weather_time
@@ -112,10 +107,20 @@ def get_keys():
     'season': time.seasons,
     'condition': [200,201,202,210,211,212,221,230,231,232,300,301,302,310,311,312,313,314,321,500,501,502,503,504,511,520,521,522,531,600,601,602,611,612,615,616,620,621,622,701,711,721,731,741,751,761,762,771,781,800,801,802,803,804],
     'condition_class': list(range(2, 9)),
-    'boolean': [True, False],
+    'is_holiday': [True, False],
     'day_of_week': list(range(7)),
     'segment_of_day': list(range(int(24 * 60 / 5))) # 5 minute chunks of a day
   }
 
 def transform(data):
-  return transform_data(data), get_keys()
+  data = transform_data(data)
+  categories = get_keys()
+
+  for category in categories.keys():
+    data[category] = data[category].astype('category')
+    print(category)
+    data[category].cat.add_categories(
+      [cat for cat in categories[category] if cat not in data[category].cat.categories]
+    )
+
+  return data
