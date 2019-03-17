@@ -4,16 +4,12 @@ from . import time_utils as time
 
 desired_fields = [
   'last_reported',
-  'num_bikes_available',
-  'num_bikes_disabled',
-  'num_docks_available',
-  'num_docks_disabled',
-  'num_ebikes_available',
+  # 'num_bikes_available',
+  'capacity',
   'day_of_week',
   'is_holiday',
   'season',
   'segment_of_day',
-  'capacity',
   'cloud_coverage',
   'condition',
   'condition_class',
@@ -100,7 +96,9 @@ def transform_data(data):
   merged = merged[pd.notnull(merged.weather_time)]
 
   merged = pd.merge(merged, weather, on='weather_time')
-  return merged[desired_fields]
+
+  merged['y'] = merged['num_bikes_available'] / merged['capacity']
+  return merged[[*desired_fields, 'y']]
 
 def get_keys():
   return {
